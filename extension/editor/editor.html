@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShotPad Editor</title>
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <div class="editor-container">
+    <!-- Top Toolbar -->
+    <header class="editor-header">
+      <div class="header-left">
+        <span class="logo">📸 ShotPad</span>
+      </div>
+      <div class="header-center">
+        <!-- Tool buttons -->
+        <div class="tool-group">
+          <button class="tool-btn active" data-tool="arrow" title="Arrow (A)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="19" x2="19" y2="5"></line>
+              <polyline points="12 5 19 5 19 12"></polyline>
+            </svg>
+            <span class="tool-label">Arrow</span>
+          </button>
+          <button class="tool-btn" data-tool="rectangle" title="Rectangle (R)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            </svg>
+            <span class="tool-label">Rect</span>
+          </button>
+          <button class="tool-btn" data-tool="ellipse" title="Circle/Ellipse (C)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="12" rx="10" ry="10"></ellipse>
+            </svg>
+            <span class="tool-label">Circle</span>
+          </button>
+          <button class="tool-btn" data-tool="line" title="Line (L)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="19" x2="19" y2="5"></line>
+            </svg>
+            <span class="tool-label">Line</span>
+          </button>
+          <button class="tool-btn" data-tool="freehand" title="Freehand Draw (D)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+            <span class="tool-label">Draw</span>
+          </button>
+          <button class="tool-btn" data-tool="text" title="Text (T)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 7 4 4 20 4 20 7"></polyline>
+              <line x1="9.5" y1="20" x2="14.5" y2="20"></line>
+              <line x1="12" y1="4" x2="12" y2="20"></line>
+            </svg>
+            <span class="tool-label">Text</span>
+          </button>
+          <button class="tool-btn" data-tool="blur" title="Blur/Pixelate (B)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+              <line x1="3" y1="9" x2="21" y2="9" opacity="0.5"></line>
+              <line x1="3" y1="15" x2="21" y2="15" opacity="0.5"></line>
+              <line x1="9" y1="3" x2="9" y2="21" opacity="0.5"></line>
+              <line x1="15" y1="3" x2="15" y2="21" opacity="0.5"></line>
+            </svg>
+            <span class="tool-label">Blur</span>
+          </button>
+          <button class="tool-btn" data-tool="crop" title="Crop (X)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"></path>
+              <path d="M1 6.13L16 6a2 2 0 0 1 2 2v15"></path>
+            </svg>
+            <span class="tool-label">Crop</span>
+          </button>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="action-btn" id="btn-undo" title="Undo (Ctrl+Z)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+        </button>
+        <button class="action-btn" id="btn-redo" title="Redo (Ctrl+Y)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"></path>
+          </svg>
+        </button>
+        <div class="header-divider"></div>
+        <button class="action-btn primary" id="btn-copy" title="Copy to Clipboard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy</span>
+        </button>
+        <button class="action-btn primary" id="btn-download" title="Download PNG">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Download</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Canvas Area -->
+    <div class="canvas-wrapper" id="canvas-wrapper">
+      <canvas id="editor-canvas"></canvas>
+      <!-- Hidden text input for text tool -->
+      <textarea id="text-input" class="text-input-overlay" style="display: none;"></textarea>
+      <!-- Crop handles (shown in crop mode) -->
+      <div id="crop-overlay" class="crop-overlay" style="display: none;">
+        <div class="crop-selection" id="crop-selection"></div>
+      </div>
+    </div>
+
+    <!-- Bottom Toolbar -->
+    <footer class="editor-footer">
+      <div class="footer-left">
+        <!-- Color Picker -->
+        <div class="color-section">
+          <span class="section-label">Color</span>
+          <div class="color-swatches">
+            <button class="color-swatch active" data-color="#ef4444" style="background: #ef4444;" title="Red"></button>
+            <button class="color-swatch" data-color="#f97316" style="background: #f97316;" title="Orange"></button>
+            <button class="color-swatch" data-color="#eab308" style="background: #eab308;" title="Yellow"></button>
+            <button class="color-swatch" data-color="#22c55e" style="background: #22c55e;" title="Green"></button>
+            <button class="color-swatch" data-color="#3b82f6" style="background: #3b82f6;" title="Blue"></button>
+            <button class="color-swatch" data-color="#a855f7" style="background: #a855f7;" title="Purple"></button>
+            <button class="color-swatch" data-color="#000000" style="background: #000000; border: 1px solid #475569;" title="Black"></button>
+            <button class="color-swatch" data-color="#ffffff" style="background: #ffffff;" title="White"></button>
+            <input type="color" id="custom-color" class="custom-color" value="#ef4444" title="Custom color">
+          </div>
+        </div>
+      </div>
+      <div class="footer-center">
+        <!-- Line Thickness -->
+        <div class="thickness-section">
+          <span class="section-label">Size</span>
+          <div class="thickness-buttons">
+            <button class="thickness-btn" data-thickness="2" title="Small (2px)">
+              <div class="thickness-preview" style="height: 2px;"></div>
+              <span>S</span>
+            </button>
+            <button class="thickness-btn active" data-thickness="4" title="Medium (4px)">
+              <div class="thickness-preview" style="height: 4px;"></div>
+              <span>M</span>
+            </button>
+            <button class="thickness-btn" data-thickness="6" title="Large (6px)">
+              <div class="thickness-preview" style="height: 6px;"></div>
+              <span>L</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="footer-right">
+        <span class="zoom-label" id="zoom-label">100%</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast" style="display: none;"></div>
+
+  <script src="editor.js"></script>
+</body>
+</html>

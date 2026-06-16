@@ -1,0 +1,184 @@
+/**
+ * ShotPad — Popup Styles
+ * Modern, dark slate theme with clean card-style buttons
+ */
+
+/* ─── Reset & Base ──────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 340px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  overflow: hidden;
+}
+
+/* ─── Container ─────────────────────────────────────────────────── */
+.popup-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Header ────────────────────────────────────────────────────── */
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  font-size: 20px;
+}
+
+.logo-text {
+  font-size: 17px;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.3px;
+}
+
+.header-right {
+  display: flex;
+  gap: 4px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+/* ─── Main / Capture Buttons ────────────────────────────────────── */
+.popup-main {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.capture-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  position: relative;
+}
+
+.capture-btn:hover {
+  background: #334155;
+  border-color: #475569;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.capture-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+  background: #3b4c63;
+}
+
+.capture-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #0f172a;
+  border-radius: 10px;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.capture-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.capture-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.capture-desc {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.capture-shortcut {
+  font-size: 10px;
+  color: #64748b;
+  background: #0f172a;
+  padding: 3px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+/* ─── Footer ────────────────────────────────────────────────────── */
+.popup-footer {
+  padding: 10px 16px 12px;
+  border-top: 1px solid #1e293b;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* ─── Animations ────────────────────────────────────────────────── */
+.capture-btn {
+  animation: fadeInUp 0.25s ease both;
+}
+
+.capture-btn:nth-child(1) { animation-delay: 0.02s; }
+.capture-btn:nth-child(2) { animation-delay: 0.06s; }
+.capture-btn:nth-child(3) { animation-delay: 0.10s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
