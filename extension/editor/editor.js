@@ -98,19 +98,24 @@ async function loadCapturedImage() {
       return;
     }
 
-    const img = new Image();
-    img.onload = () => {
-      state.baseImage = img;
-      state.baseImageWidth = img.naturalWidth;
-      state.baseImageHeight = img.naturalHeight;
-      initCanvas();
-      // Clean up storage
-      chrome.storage.local.remove(['shotpad_capture']);
-    };
-    img.onerror = () => {
-      showToast('Failed to load screenshot', true);
-    };
-    img.src = dataUrl;
+    // Await image load properly before continuing
+    const img = await new Promise((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = () => reject(new Error('Failed to load screenshot'));
+      i.src = dataUrl;
+    });
+
+    state.baseImage = img;
+    state.baseImageWidth = img.naturalWidth;
+    state.baseImageHeight = img.naturalHeight;
+    initCanvas();
+
+    // Force an extra render after a short delay to ensure visibility
+    requestAnimationFrame(() => renderCanvas());
+
+    // Clean up storage
+    chrome.storage.local.remove(['shotpad_capture']);
   } catch (err) {
     console.error('ShotPad: loadCapturedImage failed', err);
     showToast('Failed to load screenshot', true);
@@ -162,6 +167,7 @@ async function loadStitchData() {
     state.baseImageWidth = finalImg.naturalWidth;
     state.baseImageHeight = finalImg.naturalHeight;
     initCanvas();
+    requestAnimationFrame(() => renderCanvas());
 
     // Clean up storage
     chrome.storage.local.remove(['shotpad_stitch']);
