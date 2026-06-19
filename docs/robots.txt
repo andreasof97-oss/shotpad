@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://andreasof97-oss.github.io/shotpad/sitemap.xml
