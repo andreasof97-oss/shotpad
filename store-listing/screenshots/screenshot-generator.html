@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShotPad — Screenshot Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #111;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 60px;
+      align-items: center;
+    }
+
+    h1 { color: #fff; font-size: 24px; margin-bottom: 8px; }
+    .instructions { color: #9aa0a6; font-size: 14px; margin-bottom: 40px; text-align: center; }
+    .screenshot-label { color: #6b7280; font-size: 14px; margin-bottom: -40px; text-align: center; }
+
+    /* ===== SCREENSHOT FRAME ===== */
+    .screenshot-frame {
+      width: 1280px;
+      height: 800px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .bg-dark {
+      background: linear-gradient(135deg, #0f172a 0%, #1a1030 50%, #0f172a 100%);
+    }
+    .bg-warm {
+      background: linear-gradient(135deg, #1a0f00 0%, #1a1530 50%, #0f172a 100%);
+    }
+    .bg-editor {
+      background: #1e1e2e;
+    }
+
+    .screenshot-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, rgba(245,158,11,0.03) 1px, transparent 0);
+      background-size: 40px 40px;
+    }
+
+    /* Caption */
+    .caption-area {
+      position: relative;
+      z-index: 2;
+      text-align: left;
+      max-width: 400px;
+    }
+    .caption-area h2 {
+      color: #f1f5f9;
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+    .caption-area .accent { color: #f59e0b; }
+    .caption-area p {
+      color: #94a3b8;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ===== POPUP MOCKUP ===== */
+    .popup {
+      width: 360px;
+      background: #0f172a;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(245,158,11,0.15);
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+    .popup-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #1e293b;
+    }
+    .popup-logo {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: #fff;
+    }
+    .popup-title {
+      font-size: 17px; font-weight: 700; color: #f1f5f9; flex: 1;
+    }
+    .popup-btn {
+      width: 32px; height: 32px; border-radius: 6px; border: none;
+      background: transparent; color: #94a3b8; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .popup-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+
+    .capture-option {
+      padding: 16px 18px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      display: flex; align-items: center; gap: 14px;
+      transition: all 0.15s;
+    }
+    .capture-option:hover, .capture-option.active {
+      border-color: #f59e0b;
+      background: rgba(245,158,11,0.08);
+    }
+    .capture-icon {
+      width: 42px; height: 42px;
+      background: rgba(245,158,11,0.12);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .capture-info { flex: 1; }
+    .capture-name { font-size: 15px; font-weight: 600; color: #f1f5f9; margin-bottom: 2px; }
+    .capture-desc { font-size: 12px; color: #64748b; }
+    .capture-badge {
+      font-size: 10px; font-weight: 700; padding: 3px 8px;
+      background: rgba(245,158,11,0.15); color: #f59e0b;
+      border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .capture-badge.pro {
+      background: rgba(168,85,247,0.15); color: #a855f7;
+    }
+
+    .popup-footer {
+      padding: 14px 18px;
+      border-top: 1px solid #1e293b;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; color: #64748b;
+    }
+    .shortcut-badge {
+      font-size: 11px; background: #1e293b; padding: 4px 10px;
+      border-radius: 4px; color: #94a3b8; border: 1px solid #334155;
+      font-family: monospace;
+    }
+
+    /* ===== EDITOR MOCKUP ===== */
+    .editor-frame {
+      width: 700px;
+      height: 520px;
+      background: #1a1a2e;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(245,158,11,0.15);
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+    .editor-topbar {
+      padding: 10px 16px;
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .editor-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .editor-dot.r { background: #ef4444; }
+    .editor-dot.y { background: #eab308; }
+    .editor-dot.g { background: #22c55e; }
+    .editor-tab-title {
+      margin-left: 12px; font-size: 12px; color: #94a3b8;
+    }
+    .editor-actions {
+      margin-left: auto; display: flex; gap: 6px;
+    }
+    .editor-action-btn {
+      font-size: 11px; padding: 4px 10px;
+      background: #1e293b; border: 1px solid #334155;
+      border-radius: 4px; color: #94a3b8;
+    }
+    .editor-action-btn.primary {
+      background: #f59e0b; border-color: #f59e0b; color: #0f172a; font-weight: 600;
+    }
+
+    .editor-canvas {
+      flex: 1;
+      background: #2a2a3e;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .editor-canvas .screenshot-preview {
+      width: 90%; height: 85%;
+      background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%);
+      border-radius: 4px;
+      position: relative;
+    }
+    /* Fake webpage content in the "screenshot" */
+    .fake-page-bar {
+      height: 28px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
+      padding: 0 12px; display: flex; align-items: center; gap: 6px;
+    }
+    .fake-dot { width: 6px; height: 6px; border-radius: 50%; background: #cbd5e1; }
+    .fake-url { font-size: 8px; color: #94a3b8; margin-left: 8px; background: #e2e8f0; padding: 2px 60px 2px 8px; border-radius: 3px; }
+    .fake-page-body { padding: 16px; }
+    .fake-heading { width: 180px; height: 12px; background: #94a3b8; border-radius: 2px; margin-bottom: 10px; }
+    .fake-text { width: 260px; height: 8px; background: #cbd5e1; border-radius: 2px; margin-bottom: 6px; }
+    .fake-text.short { width: 160px; }
+    .fake-text.med { width: 220px; }
+    .fake-img { width: 120px; height: 70px; background: #b0bec5; border-radius: 4px; margin-top: 10px; }
+
+    /* Annotations drawn on top */
+    .annotation {
+      position: absolute;
+      z-index: 5;
+    }
+    .anno-arrow {
+      width: 120px; height: 3px; background: #ef4444;
+      top: 90px; left: 140px; transform: rotate(-15deg);
+    }
+    .anno-arrow::after {
+      content: ''; position: absolute; right: -2px; top: -5px;
+      border-left: 12px solid #ef4444; border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+    }
+    .anno-rect {
+      width: 200px; height: 50px; border: 3px solid #f59e0b;
+      border-radius: 4px; top: 120px; left: 30px;
+    }
+    .anno-text {
+      top: 60px; right: 40px; color: #ef4444;
+      font-size: 14px; font-weight: 700;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .anno-blur {
+      width: 100px; height: 18px;
+      background: rgba(100,100,100,0.7);
+      backdrop-filter: blur(4px);
+      border-radius: 3px;
+      top: 178px; left: 50px;
+    }
+    .anno-circle {
+      width: 60px; height: 60px;
+      border: 3px solid #22c55e;
+      border-radius: 50%;
+      bottom: 40px; right: 50px;
+    }
+
+    .editor-toolbar {
+      padding: 10px 16px;
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .tool-btn {
+      width: 36px; height: 36px; border-radius: 8px; border: none;
+      background: #1e293b; color: #94a3b8; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tool-btn.active {
+      background: rgba(245,158,11,0.15); color: #f59e0b;
+      border: 1px solid rgba(245,158,11,0.3);
+    }
+    .tool-sep {
+      width: 1px; height: 24px; background: #334155; margin: 0 4px;
+    }
+    .color-dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid transparent;
+    }
+    .color-dot.active { border-color: #fff; }
+    .size-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: #1e293b; border: 1px solid #334155;
+      color: #94a3b8; font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .size-btn.active { border-color: #f59e0b; color: #f59e0b; }
+
+    .editor-bottombar {
+      padding: 10px 16px;
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      display: flex; align-items: center; gap: 8px;
+      justify-content: flex-end;
+    }
+    .bottom-btn {
+      font-size: 12px; padding: 8px 16px;
+      border-radius: 6px; border: 1px solid #334155;
+      background: transparent; color: #94a3b8;
+      font-family: inherit; font-weight: 500;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .bottom-btn.primary {
+      background: #f59e0b; border-color: #f59e0b;
+      color: #0f172a; font-weight: 600;
+    }
+
+    /* ===== COMPARISON CARDS ===== */
+    .compare-grid {
+      display: flex; gap: 24px;
+      position: relative; z-index: 2;
+    }
+    .compare-card {
+      width: 240px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 28px 22px;
+      text-align: center;
+    }
+    .compare-card.highlight {
+      border-color: #f59e0b;
+      box-shadow: 0 0 30px rgba(245,158,11,0.15);
+      transform: scale(1.05);
+    }
+    .compare-name {
+      font-size: 18px; font-weight: 700; color: #f1f5f9;
+      margin-bottom: 4px;
+    }
+    .compare-price {
+      font-size: 13px; color: #64748b; margin-bottom: 16px;
+    }
+    .compare-price .price-accent { color: #f59e0b; font-weight: 600; }
+    .compare-price .price-bad { color: #ef4444; font-weight: 600; }
+    .compare-list {
+      list-style: none; text-align: left;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .compare-list li {
+      font-size: 13px; color: #94a3b8;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .check { color: #22c55e; }
+    .cross { color: #ef4444; }
+    .warn { color: #eab308; }
+    .best-badge {
+      display: inline-block;
+      font-size: 10px; font-weight: 700;
+      background: #f59e0b; color: #0f172a;
+      padding: 3px 10px; border-radius: 10px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    /* ===== FEATURE PILLS ===== */
+    .feature-pills {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center;
+      max-width: 500px;
+      position: relative; z-index: 2;
+    }
+    .fpill {
+      padding: 10px 18px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      font-size: 14px; color: #f1f5f9;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .fpill .icon { font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>ShotPad Store Screenshots</h1>
+  <p class="instructions">Right-click each screenshot frame → "Save image" or use a screenshot tool to capture at 1280×800.<br>On macOS: Cmd+Shift+4 then drag. On Windows: Win+Shift+S.</p>
+
+  <!-- ========== SCREENSHOT 1: Capture Modes ========== -->
+  <p class="screenshot-label">Screenshot 1 — Capture Modes (1280×800)</p>
+  <div class="screenshot-frame bg-dark" id="ss1">
+    <div class="caption-area">
+      <h2>Capture <span class="accent">any part</span> of any page</h2>
+      <p>Visible area, selected region, or full-page scroll capture. One click or keyboard shortcut — your choice.</p>
+    </div>
+    <div class="popup">
+      <div class="popup-header">
+        <div class="popup-logo">📸</div>
+        <div class="popup-title">ShotPad</div>
+        <div class="popup-btn">⚙️</div>
+      </div>
+      <div class="popup-body">
+        <div class="capture-option active">
+          <div class="capture-icon">📋</div>
+          <div class="capture-info">
+            <div class="capture-name">Visible Area</div>
+            <div class="capture-desc">Screenshot what you see right now</div>
+          </div>
+        </div>
+        <div class="capture-option">
+          <div class="capture-icon">✂️</div>
+          <div class="capture-info">
+            <div class="capture-name">Select Region</div>
+            <div class="capture-desc">Click & drag to capture an area</div>
+          </div>
+        </div>
+        <div class="capture-option">
+          <div class="capture-icon">📄</div>
+          <div class="capture-info">
+            <div class="capture-name">Full Page</div>
+            <div class="capture-desc">Auto-scroll & capture entire page</div>
+          </div>
+        </div>
+        <div class="capture-option">
+          <div class="capture-icon">🎥</div>
+          <div class="capture-info">
+            <div class="capture-name">Record Tab</div>
+            <div class="capture-desc">Record your screen as video</div>
+          </div>
+          <span class="capture-badge pro">PRO</span>
+        </div>
+      </div>
+      <div class="popup-footer">
+        <span>3 captures today</span>
+        <span class="shortcut-badge">Ctrl+Shift+X</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCREENSHOT 2: Editor with Annotations ========== -->
+  <p class="screenshot-label">Screenshot 2 — Full Annotation Editor (1280×800)</p>
+  <div class="screenshot-frame bg-editor" id="ss2" style="gap: 0; flex-direction: column; justify-content: center;">
+    <div style="position: absolute; top: 40px; left: 60px; z-index: 10;">
+      <h2 style="color: #f1f5f9; font-size: 28px; font-weight: 800;">Annotate with <span style="color: #f59e0b;">pro-grade tools</span></h2>
+      <p style="color: #94a3b8; font-size: 15px; margin-top: 6px;">Arrows, shapes, text, blur, crop — everything opens in a clean editor tab.</p>
+    </div>
+    <div class="editor-frame" style="margin-top: 60px;">
+      <div class="editor-topbar">
+        <span class="editor-dot r"></span>
+        <span class="editor-dot y"></span>
+        <span class="editor-dot g"></span>
+        <span class="editor-tab-title">ShotPad Editor — screenshot-2026-06-19.png</span>
+        <div class="editor-actions">
+          <span class="editor-action-btn">↩ Undo</span>
+          <span class="editor-action-btn">↪ Redo</span>
+        </div>
+      </div>
+      <div class="editor-canvas">
+        <div class="screenshot-preview">
+          <div class="fake-page-bar">
+            <span class="fake-dot"></span><span class="fake-dot"></span><span class="fake-dot"></span>
+            <span class="fake-url">example.com/dashboard</span>
+          </div>
+          <div class="fake-page-body">
+            <div class="fake-heading"></div>
+            <div class="fake-text"></div>
+            <div class="fake-text med"></div>
+            <div class="fake-text short"></div>
+            <div class="fake-text"></div>
+            <div class="fake-text med"></div>
+            <div class="fake-img"></div>
+          </div>
+          <!-- Annotations -->
+          <div class="annotation anno-arrow"></div>
+          <div class="annotation anno-rect"></div>
+          <div class="annotation anno-text">⚠️ Bug here!</div>
+          <div class="annotation anno-blur"></div>
+          <div class="annotation anno-circle"></div>
+        </div>
+      </div>
+      <div class="editor-toolbar">
+        <span class="tool-btn">↗</span>
+        <span class="tool-btn active">□</span>
+        <span class="tool-btn">○</span>
+        <span class="tool-btn">—</span>
+        <span class="tool-btn">✏</span>
+        <span class="tool-btn">T</span>
+        <span class="tool-btn">▓</span>
+        <span class="tool-btn">✂</span>
+        <span class="tool-sep"></span>
+        <span class="color-dot" style="background: #ef4444;"></span>
+        <span class="color-dot active" style="background: #f59e0b;"></span>
+        <span class="color-dot" style="background: #22c55e;"></span>
+        <span class="color-dot" style="background: #3b82f6;"></span>
+        <span class="color-dot" style="background: #a855f7;"></span>
+        <span class="color-dot" style="background: #fff;"></span>
+        <span class="tool-sep"></span>
+        <span class="size-btn">S</span>
+        <span class="size-btn active">M</span>
+        <span class="size-btn">L</span>
+      </div>
+      <div class="editor-bottombar">
+        <span class="bottom-btn">📋 Copy</span>
+        <span class="bottom-btn">☁️ Save</span>
+        <span class="bottom-btn primary">💾 Download PNG</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCREENSHOT 3: Why ShotPad (Comparison) ========== -->
+  <p class="screenshot-label">Screenshot 3 — Why ShotPad (1280×800)</p>
+  <div class="screenshot-frame bg-dark" id="ss3">
+    <div style="position: absolute; top: 50px; z-index: 10; text-align: center;">
+      <h2 style="color: #f1f5f9; font-size: 34px; font-weight: 800;">Why <span style="color: #f59e0b;">ShotPad</span>?</h2>
+      <p style="color: #94a3b8; font-size: 16px; margin-top: 8px;">A lighter, faster, more affordable alternative.</p>
+    </div>
+    <div class="compare-grid" style="margin-top: 40px;">
+      <div class="compare-card">
+        <div class="compare-name">Awesome Screenshot</div>
+        <div class="compare-price"><span class="price-bad">$6/mo</span></div>
+        <ul class="compare-list">
+          <li><span class="check">✓</span> Full page capture</li>
+          <li><span class="check">✓</span> Annotations</li>
+          <li><span class="cross">✗</span> Bloated & slow</li>
+          <li><span class="cross">✗</span> Expensive</li>
+          <li><span class="cross">✗</span> Heavy permissions</li>
+        </ul>
+      </div>
+      <div class="compare-card highlight">
+        <span class="best-badge">Best Choice</span>
+        <div class="compare-name">ShotPad</div>
+        <div class="compare-price"><span class="price-accent">Free</span> (Pro $4/mo)</div>
+        <ul class="compare-list">
+          <li><span class="check">✓</span> Full page capture</li>
+          <li><span class="check">✓</span> Pro annotations</li>
+          <li><span class="check">✓</span> Fast & lightweight</li>
+          <li><span class="check">✓</span> Free forever tier</li>
+          <li><span class="check">✓</span> Privacy-first</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <div class="compare-name">Lightshot</div>
+        <div class="compare-price">Free</div>
+        <ul class="compare-list">
+          <li><span class="check">✓</span> Region capture</li>
+          <li><span class="warn">⚠</span> Basic annotations</li>
+          <li><span class="cross">✗</span> No full page</li>
+          <li><span class="cross">✗</span> Privacy concerns</li>
+          <li><span class="cross">✗</span> Dated UI</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <div class="compare-name">GoFullPage</div>
+        <div class="compare-price">Free</div>
+        <ul class="compare-list">
+          <li><span class="check">✓</span> Full page capture</li>
+          <li><span class="cross">✗</span> No editor at all</li>
+          <li><span class="cross">✗</span> No annotations</li>
+          <li><span class="cross">✗</span> No blur/crop</li>
+          <li><span class="cross">✗</span> Download only</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCREENSHOT 4: All Features ========== -->
+  <p class="screenshot-label">Screenshot 4 — All Free Features (1280×800)</p>
+  <div class="screenshot-frame bg-warm" id="ss4">
+    <div style="text-align: center; position: relative; z-index: 2;">
+      <h2 style="color: #f1f5f9; font-size: 34px; font-weight: 800; margin-bottom: 8px;">Everything you need. <span style="color: #f59e0b;">Free.</span></h2>
+      <p style="color: #94a3b8; font-size: 16px; margin-bottom: 36px;">No account required. No limits on captures.</p>
+      <div class="feature-pills">
+        <span class="fpill"><span class="icon">📋</span> Visible Area Capture</span>
+        <span class="fpill"><span class="icon">✂️</span> Region Select</span>
+        <span class="fpill"><span class="icon">📄</span> Full Page Scroll</span>
+        <span class="fpill"><span class="icon">↗️</span> Arrows</span>
+        <span class="fpill"><span class="icon">□</span> Rectangles</span>
+        <span class="fpill"><span class="icon">○</span> Circles</span>
+        <span class="fpill"><span class="icon">✏️</span> Freehand Draw</span>
+        <span class="fpill"><span class="icon">T</span> Text Labels</span>
+        <span class="fpill"><span class="icon">▓</span> Blur / Pixelate</span>
+        <span class="fpill"><span class="icon">✂</span> Crop</span>
+        <span class="fpill"><span class="icon">🎨</span> Color Picker</span>
+        <span class="fpill"><span class="icon">↩</span> Undo / Redo</span>
+        <span class="fpill"><span class="icon">💾</span> Download PNG</span>
+        <span class="fpill"><span class="icon">📋</span> Copy to Clipboard</span>
+        <span class="fpill"><span class="icon">⌨️</span> Ctrl+Shift+X</span>
+        <span class="fpill"><span class="icon">🌙</span> Dark Mode</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCREENSHOT 5: Privacy + Speed ========== -->
+  <p class="screenshot-label">Screenshot 5 — Privacy & Speed (1280×800)</p>
+  <div class="screenshot-frame bg-dark" id="ss5">
+    <div style="text-align: center; position: relative; z-index: 2; max-width: 700px;">
+      <div style="font-size: 64px; margin-bottom: 20px;">🛡️</div>
+      <h2 style="color: #f1f5f9; font-size: 36px; font-weight: 800; margin-bottom: 14px;">Your screenshots <span style="color: #f59e0b;">stay yours</span></h2>
+      <p style="color: #94a3b8; font-size: 18px; line-height: 1.7; margin-bottom: 32px;">Everything is stored locally on your device. No accounts, no servers, no tracking. Screenshots never leave your browser unless you choose to share them.</p>
+      <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 10px; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 14px 22px;">
+          <span style="font-size: 24px;">🔒</span>
+          <div>
+            <div style="font-size: 14px; font-weight: 600; color: #f1f5f9;">Local Storage Only</div>
+            <div style="font-size: 12px; color: #64748b;">Nothing sent to servers</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 14px 22px;">
+          <span style="font-size: 24px;">⚡</span>
+          <div>
+            <div style="font-size: 14px; font-weight: 600; color: #f1f5f9;">Instant Capture</div>
+            <div style="font-size: 12px; color: #64748b;">No loading, no delays</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 14px 22px;">
+          <span style="font-size: 24px;">🪶</span>
+          <div>
+            <div style="font-size: 14px; font-weight: 600; color: #f1f5f9;">Lightweight</div>
+            <div style="font-size: 12px; color: #64748b;">Under 500KB, zero bloat</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 14px 22px;">
+          <span style="font-size: 24px;">🌐</span>
+          <div>
+            <div style="font-size: 14px; font-weight: 600; color: #f1f5f9;">Open Source</div>
+            <div style="font-size: 12px; color: #64748b;">Inspect the code yourself</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
