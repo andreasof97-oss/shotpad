@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — ShotPad</title>
+<meta name="description" content="Privacy Policy for ShotPad Chrome Extension. Learn how ShotPad handles your data.">
+<link rel="canonical" href="https://andreasof97-oss.github.io/shotpad/privacy.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0f172a;--bg-card:#1e293b;--accent:#f59e0b;--text:#e2e8f0;--text-muted:#94a3b8;--text-heading:#f8fafc;--border:#334155}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.container{max-width:760px;margin:0 auto;padding:0 24px}
+
+nav{background:rgba(15,23,42,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(51,65,85,.5);padding:0 24px;position:sticky;top:0;z-index:10}
+.nav-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1rem;color:var(--text-heading)}
+.nav-brand svg{flex-shrink:0}
+.nav-back{font-size:.85rem;color:var(--text-muted)}
+.nav-back:hover{color:var(--accent)}
+
+.hero{padding:80px 0 48px;text-align:center;border-bottom:1px solid var(--border)}
+.hero h1{font-size:clamp(1.5rem,4vw,2.25rem);font-weight:800;color:var(--text-heading);margin-bottom:8px}
+.hero p{color:var(--text-muted);font-size:.95rem}
+
+.content{padding:48px 0 80px}
+.content h2{font-size:1.25rem;font-weight:700;color:var(--text-heading);margin:40px 0 12px;padding-top:16px;border-top:1px solid var(--border)}
+.content h2:first-child{border-top:none;margin-top:0;padding-top:0}
+.content p,.content li{font-size:.95rem;color:var(--text-muted);margin-bottom:12px}
+.content ul{padding-left:24px;margin-bottom:16px}
+.content li{margin-bottom:8px}
+.content strong{color:var(--text)}
+.content .highlight-box{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin:24px 0}
+.content .highlight-box p{margin-bottom:0}
+
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);color:#22c55e;font-size:.8rem;font-weight:600;padding:6px 14px;border-radius:99px;border:1px solid rgba(34,197,94,.2);margin-bottom:24px}
+
+footer{border-top:1px solid var(--border);padding:32px 0;text-align:center;font-size:.8rem;color:var(--text-muted)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="./" class="nav-brand">
+      <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect x="2" y="4" width="24" height="18" rx="3" stroke="#f59e0b" stroke-width="2"/><circle cx="19" cy="10" r="2.5" stroke="#f59e0b" stroke-width="1.5"/><path d="M2 17l6-5 4 3 5-4 9 7" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      ShotPad
+    </a>
+    <a href="./" class="nav-back">← Back to Home</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <h1>Privacy Policy</h1>
+    <p>Last updated: June 19, 2026</p>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container">
+
+    <div class="badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Privacy-First by Design
+    </div>
+
+    <div class="highlight-box">
+      <p><strong>TL;DR:</strong> ShotPad's free tier collects zero personal data. Screenshots are captured and processed entirely on your device. Nothing leaves your browser unless you explicitly choose to share or upgrade to Pro.</p>
+    </div>
+
+    <h2>1. Introduction</h2>
+    <p>ShotPad ("the Extension") is a Chrome browser extension that allows users to capture screenshots, annotate them, and save or share the results. This Privacy Policy explains what data the Extension collects, how it is used, and your rights regarding that data.</p>
+    <p>By installing and using ShotPad, you agree to the practices described in this policy.</p>
+
+    <h2>2. Data Collection — Free Tier</h2>
+    <p>The free version of ShotPad is designed with a <strong>zero-collection architecture</strong>:</p>
+    <ul>
+      <li><strong>Screenshots</strong> are captured using Chrome's built-in <code>chrome.tabs.captureVisibleTab</code> API and processed entirely within your browser.</li>
+      <li><strong>All data</strong> (screenshots, annotations, user preferences) is stored locally using <code>chrome.storage.local</code> and never transmitted to any external server.</li>
+      <li><strong>No analytics, no tracking pixels, no cookies, no fingerprinting.</strong></li>
+      <li><strong>No personal information</strong> (name, email, IP address) is collected, stored, or processed.</li>
+    </ul>
+    <p>When you download a screenshot as PNG or copy it to your clipboard, this action happens entirely on your device.</p>
+
+    <h2>3. Data Collection — Pro Tier</h2>
+    <p>If you choose to upgrade to ShotPad Pro, the following additional data processing occurs:</p>
+    <ul>
+      <li><strong>Authentication:</strong> We use <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a> for user authentication. When you create an account, your email address and a hashed password are stored securely in Supabase's infrastructure.</li>
+      <li><strong>Cloud Storage:</strong> Screenshots you explicitly choose to save to the cloud are uploaded to Supabase Storage. These files are associated with your account and accessible only to you.</li>
+      <li><strong>Payment Processing:</strong> Payments are handled by third-party payment processors. ShotPad does not store your credit card number or payment details directly.</li>
+    </ul>
+    <p>Pro features like screen recording and auto-upload only transmit data when you explicitly enable them.</p>
+
+    <h2>4. Permissions</h2>
+    <p>ShotPad requests the following Chrome permissions:</p>
+    <ul>
+      <li><strong><code>activeTab</code></strong> — To capture the visible area of the current tab when you initiate a screenshot.</li>
+      <li><strong><code>storage</code></strong> — To save your preferences and screenshots locally.</li>
+      <li><strong><code>commands</code></strong> — To register the keyboard shortcut (Ctrl+Shift+X).</li>
+      <li><strong><code>downloads</code></strong> — To save annotated screenshots as PNG files to your computer.</li>
+      <li><strong><code>clipboardWrite</code></strong> — To copy screenshots to your clipboard.</li>
+      <li><strong><code>scripting</code></strong> — To inject the region-select overlay and full-page scroll capture functionality.</li>
+    </ul>
+    <p>Each permission is used solely for its stated purpose. We follow the principle of <strong>least privilege</strong> — we never request more access than needed.</p>
+
+    <h2>5. Third-Party Services</h2>
+    <p><strong>Free Tier:</strong> No third-party services are used. Zero external network requests.</p>
+    <p><strong>Pro Tier:</strong></p>
+    <ul>
+      <li><strong>Supabase</strong> (authentication & cloud storage) — <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase Privacy Policy</a></li>
+      <li><strong>Payment processor</strong> (billing) — Subject to their respective privacy policies, linked during checkout.</li>
+    </ul>
+
+    <h2>6. Data Retention & Deletion</h2>
+    <ul>
+      <li><strong>Free Tier:</strong> All data is stored locally on your device. Uninstalling the extension removes all data. You can also clear data via Chrome's extension settings at any time.</li>
+      <li><strong>Pro Tier:</strong> Cloud-stored screenshots and account data can be deleted at any time from your account settings. Upon account deletion, all associated data is permanently removed from our servers within 30 days.</li>
+    </ul>
+
+    <h2>7. Children's Privacy</h2>
+    <p>ShotPad is not directed at children under 13. We do not knowingly collect personal information from children. If you believe a child has provided us with personal data (via Pro tier sign-up), please contact us and we will promptly delete it.</p>
+
+    <h2>8. Security</h2>
+    <p>We take security seriously:</p>
+    <ul>
+      <li>Free tier data never leaves your device — the most secure architecture possible.</li>
+      <li>Pro tier uses Supabase's enterprise-grade security, including encryption at rest and in transit (TLS 1.2+).</li>
+      <li>Authentication tokens are stored securely and never exposed to web pages.</li>
+      <li>Our source code is <a href="https://github.com/andreasof97-oss/shotpad" target="_blank" rel="noopener">open source</a> and available for security audits.</li>
+    </ul>
+
+    <h2>9. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last updated" date. For significant changes, we will notify users through the extension's update notes.</p>
+
+    <h2>10. Contact</h2>
+    <p>If you have questions or concerns about this Privacy Policy, you can:</p>
+    <ul>
+      <li>Open an issue on our <a href="https://github.com/andreasof97-oss/shotpad/issues" target="_blank" rel="noopener">GitHub repository</a></li>
+      <li>Email us at <strong>privacy@shotpad.app</strong></li>
+    </ul>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 ShotPad. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>
